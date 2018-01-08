@@ -45,8 +45,8 @@ void escriure_pantalla(){
     clearGLCD(0,7,0,127); // Neteja pantalla
     // X = vertical Y = horitzontal
     putch(X, Y, '*');  // Pacman
-    putch(fx, fy, '+');  // Fantasma
-    putch(fx2, fy2, '+');  // Fantasma
+    putch(fx, fy, '+');  // Fantasma 1
+    putch(fx2, fy2, '+');  // Fantasma 2
 }
 
 void writeTxt(byte page, byte y, char * s) {
@@ -68,14 +68,13 @@ void interrupt timer2(void) {
       else TRISCbits.RC2 = 1;
       // 4 = null, 1 = esquerra, 0 = dalt, 3 = baix, 2 = dreta
       cal_moure = 1;
+      direccio = 4;
       if(PINA0 == 1) direccio = 0;
-      else if(PINA1 == 1) direccio = 1;
-      else if(PINA2 == 1) direccio = 2;
-      else if(PINA3 == 1) direccio = 3;
-      else {
-        direccio = 4;
-        cal_moure = 0;
-      }
+      if(PINA1 == 1) direccio = 1;
+      if(PINA2 == 1) direccio = 2;
+      if(PINA3 == 1) direccio = 3;
+      if (direccio == 4) cal_moure = 0;
+
     }
     if (contador == 400) {
       contador = 0;
