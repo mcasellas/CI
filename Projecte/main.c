@@ -31,6 +31,7 @@ int contador = 0;
 int imprimeix = 0;
 int direccio = 4; // 4 = null, 1 = esquerra, 0 = dalt, 3 = baix, 2 = dreta
 int cal_moure = 0;
+int moure_fantasmes = 0;
 
 
 void escriure_pantalla(){
@@ -69,8 +70,8 @@ void interrupt timer2(void) {
         cal_moure = 0;
       }
     }
-    if (contador == 100 or contador == 200) {
-
+    if (contador == 400) {
+      moure_fantasmes = 1;
     }
   }
   PIR1bits.TMR2IF = 0; // Posem el flag a 0
@@ -123,7 +124,7 @@ void main(void) {
 }
 
 while (1){
-
+    int cal_imprimir = 0;
     // Movem el pacman
     if (cal_moure) {
       if(direccio==0){ // pujar
@@ -143,22 +144,30 @@ while (1){
       }
 
       cal_moure = 0;
+      cal_imprimir = 1;
     }
 
-    // Mou el fantasmito 1
-    if (Y < fy) --fy;
-    else if(Y > fy)++fy;
-    else if (X < fx) --fx;
-    else if (X > fx) ++fx;
-    else morir();
+    if (moure_fantasmes){
+      // Mou el fantasmito 1 : Comportament 1
+      if (Y < fy) --fy;
+      else if(Y > fy)++fy;
+      else if (X < fx) --fx;
+      else if (X > fx) ++fx;
+      else morir();
 
-    // Mou el fantasmito 2
-    if (Y < fy2) --fy2;
-    else if(Y > fy2) ++fy2;
-    else if (X < fx2) --fx2;
-    else if (X > fx2) ++fx2;
-    else morir();
+      // Mou el fantasmito 2 : Comportament 2
+      if (X < fx2) --fx2;
+      else if (X > fx2) ++fx2;
+      else if (Y < fy2) --fy2;
+      else if(Y > fy2) ++fy2;
+      else morir();
+      moure_fantasmes = 0;
+      cal_imprimir = 1;
+    }
 
-    escriure_pantalla();
+    if (cal_imprimir){
+      escriure_pantalla();
+      cal_imprimir = 0;
+    }
   }
 }
