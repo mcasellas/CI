@@ -20,12 +20,19 @@ const char * fantasmito = "+";
 const char * GAMEOVER = "GAME OVER !\n";
 
 
-byte X=3;
-byte Y=12;
+byte X = 3;
+byte Y = 12;
 byte fx = 3;
 byte fy = 3;
 byte fx2 = 3;
 byte fy2 = 20;
+
+byte aX = 0;
+byte aY = 0;
+byte afx = 0;
+byte afy = 0;
+byte afx2 = 0;
+byte afy2 = 0;
 
 int contador = 0;
 int imprimeix = 0;
@@ -44,7 +51,7 @@ void escriure_pantalla(){
 
 void writeTxt(byte page, byte y, char * s) {
 	int i=0;
-	while (*s!='\n') {
+	while (*s! = '\n') {
 		putch(page, y+i, *(s++));
 		i++;
 	};
@@ -83,21 +90,21 @@ void morir(){
   clearGLCD(0,7,0,127);
   // Treu Game Over Per Pantalla
   writeTxt(3,3, GAMEOVER);
-  __delay_ms(2000);
+  __delay_ms(3000);
   asm("reset");
 }
 
 
 void main(void) {
 {
-	ADCON1 = 0x0F; // Configurat com a digital
+	ADCON1 = 0x0F;   // Configurat com a digital
 	// Valors
 	PORTA = 0x00;
-  PORTD = 0x00; 		   //Donem uns valors inicials als ports
+  PORTD = 0x00;    //Donem uns valors inicials als ports
 	PORTB = 0x00;
 	// TRIS
   TRISA = 0xFF;
-	TRISD = 0x00;		   //Configurem D i B de sortida
+	TRISD = 0x00;		 //Configurem D i B de sortida
 	TRISB = 0x00;
 	TRISCbits.RC2 = 0; // Pin RC2-> Sortida
 
@@ -109,7 +116,6 @@ void main(void) {
   INTCONbits.GIE = 1; // General Intertupt Enable
   PIE1bits.TMR2IE = 1; // Activem interrupcions del TMR2
   INTCONbits.GIEL = 1; // Permetem diferents prioritats (PEIE)
-
   T2CONbits.T2CKPS1 = 1; // Preescaler = 4
   PR2 = 239; // PWM period
   // Configure the CCPx module for PWM operation
@@ -120,6 +126,7 @@ void main(void) {
   CCP1CONbits.DC1B1 = 0;
   CCP1CONbits.DC1B0 = 0;
   T2CONbits.TMR2ON = 1; // Activem el timer
+
   // Comen�em escriure pantalla
   escriure_pantalla();
 }
@@ -129,18 +136,22 @@ while (1){
     // Movem el pacman
     if (cal_moure) {
       if(direccio==0){ // pujar
+        aX = X;
         if(X>1) --X;
       }
 
       else if(direccio==1){ // esquerra
+        aY = Y;
         if(Y > 1) --Y;
       }
 
       else if(direccio==3){ // baixar
+        aX = X;
         if(X < 24) ++X;
       }
 
       else if(direccio==2){ // dreta
+        aY = Y;
         if(Y < 7) ++Y;
       }
 
@@ -150,18 +161,43 @@ while (1){
 
     if (moure_fantasmes){
       // Mou el fantasmito 1 : Comportament 1
-      if (Y < fy) --fy;
-      else if(Y > fy)++fy;
-      else if (X < fx) --fx;
-      else if (X > fx) ++fx;
+      if (Y < fy) {
+        afy = fy;
+        --fy;
+      }
+      else if(Y > fy) {
+        afy = fy;
+        ++fy;
+      }
+      else if (X < fx) {
+        afx = fx;
+        --fx;
+      }
+      else if (X > fx) {
+        afx = fx;
+        ++fx;
+      }
       else morir();
 
       // Mou el fantasmito 2 : Comportament 2
-      if (X < fx2) --fx2;
-      else if (X > fx2) ++fx2;
-      else if (Y < fy2) --fy2;
-      else if(Y > fy2) ++fy2;
+      if (Y < fy2) {
+        afy = fy2;
+        --fy2;
+      }
+      else if(Y > fy2) {
+        afy = fy2;
+        ++fy2;
+      }
+      else if (X < fx2) {
+        afx = fx2;
+        --fx2;
+      }
+      else if (X > fx2) {
+        afx = fx2;
+        ++fx2;
+      }
       else morir();
+
       moure_fantasmes = 0;
       cal_imprimir = 1;
     }
