@@ -15,11 +15,12 @@
 #include "config.h"
 #include "GLCD.h"
 
+// Frases
 const char * pacman = "*";
 const char * fantasmito = "+";
 const char * GAMEOVER = "GAME OVER !\n";
 
-
+// Posició actual
 byte X = 3;
 byte Y = 12;
 byte fx = 3;
@@ -27,6 +28,7 @@ byte fy = 3;
 byte fx2 = 3;
 byte fy2 = 20;
 
+// Posicions anteriors
 byte aX = 0;
 byte aY = 0;
 byte afx = 0;
@@ -36,13 +38,18 @@ byte afy2 = 0;
 
 int contador = 0;
 int imprimeix = 0;
-int direccio = 4; // 4 = null, 1 = esquerra, 0 = dalt, 3 = baix, 2 = dreta
+// 4 = null, 1 = esquerra, 0 = dalt, 3 = baix, 2 = dreta
+int direccio = 4;
 int cal_moure = 0;
 int moure_fantasmes = 0;
 
 
 void escriure_pantalla(){
-    clearGLCD(0,7,0,127); // Neteja pantalla
+    // Netegem les posicions anteriors
+    clearGLCD(aX,aX,aY-1,aY+1);
+    clearGLCD(afx,afx,afy-1,afy+1);
+    clearGLCD(afx2,afx2,afy2-1,afy2+1);
+
     // X = vertical Y = horitzontal
     putch(X, Y, '*');  // Pacman
     putch(fx, fy, '+');  // Fantasma 1
@@ -131,32 +138,7 @@ void main(void) {
 }
 
 while (1){
-    int cal_imprimir = 0;
-    // Movem el pacman
-    if (cal_moure) {
-      if(direccio==0){ // pujar
-        aX = X;
-        if(X>1) --X;
-      }
-
-      else if(direccio==1){ // esquerra
-        aY = Y;
-        if(Y > 1) --Y;
-      }
-
-      else if(direccio==3){ // baixar
-        aX = X;
-        if(X < 24) ++X;
-      }
-
-      else if(direccio==2){ // dreta
-        aY = Y;
-        if(Y < 7) ++Y;
-      }
-
-      cal_moure = 0;
-      cal_imprimir = 1;
-    }
+    int cal_imprimir = 0
 
     if (moure_fantasmes){
       // Mou el fantasmito 1 : Comportament 1
@@ -200,6 +182,33 @@ while (1){
       moure_fantasmes = 0;
       cal_imprimir = 1;
     }
+
+    // Movem el pacman
+    if (cal_moure) {
+      if(direccio==0){ // pujar
+        aX = X;
+        if(X>1) --X;
+      }
+
+      else if(direccio==1){ // esquerra
+        aY = Y;
+        if(Y > 1) --Y;
+      }
+
+      else if(direccio==3){ // baixar
+        aX = X;
+        if(X < 24) ++X;
+      }
+
+      else if(direccio==2){ // dreta
+        aY = Y;
+        if(Y < 7) ++Y;
+      }
+
+      cal_moure = 0;
+      cal_imprimir = 1;
+    }
+
 
     if (cal_imprimir){
       escriure_pantalla();
