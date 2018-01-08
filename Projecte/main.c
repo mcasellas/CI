@@ -55,7 +55,7 @@ void interrupt timer2(void) {
     ++contador; // Ha passat 1.9ms
     // Cada 1.9 * 200 ms fa soroll i mou el bitxo
     if (contador == 200) {
-      contador = 0;
+
       // Activa o desactiva el soroll
       if (TRISCbits.RC2) TRISCbits.RC2 = 0;
       else TRISCbits.RC2 = 1;
@@ -71,6 +71,7 @@ void interrupt timer2(void) {
       }
     }
     if (contador == 400) {
+      contador = 0;
       moure_fantasmes = 1;
     }
   }
