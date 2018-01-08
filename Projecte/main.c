@@ -58,7 +58,7 @@ void escriure_pantalla(){
 
 void writeTxt(byte page, byte y, char * s) {
 	int i=0;
-	while (*s! = '\n') {
+	while (*s != '\n') {
 		putch(page, y+i, *(s++));
 		i++;
 	};
@@ -138,7 +138,7 @@ void main(void) {
 }
 
 while (1){
-    int cal_imprimir = 0
+    int cal_imprimir = 0;
 
     if (moure_fantasmes){
       // Mou el fantasmito 1 : Comportament 1
@@ -161,21 +161,21 @@ while (1){
       else morir();
 
       // Mou el fantasmito 2 : Comportament 2
-      if (Y < fy2) {
-        afy = fy2;
-        --fy2;
-      }
-      else if(Y > fy2) {
-        afy = fy2;
-        ++fy2;
-      }
-      else if (X < fx2) {
+      if (X < fx2) {
         afx = fx2;
         --fx2;
       }
       else if (X > fx2) {
         afx = fx2;
         ++fx2;
+      }
+      else if (Y < fy2) {
+        afy = fy2;
+        --fy2;
+      }
+      else if(Y > fy2) {
+        afy = fy2;
+        ++fy2;
       }
       else morir();
 
@@ -208,7 +208,6 @@ while (1){
       cal_moure = 0;
       cal_imprimir = 1;
     }
-
 
     if (cal_imprimir){
       escriure_pantalla();
